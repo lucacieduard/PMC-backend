@@ -1,13 +1,12 @@
 import express from "express";
 import morgan from "morgan";
 
-const app = express();
+import { router as competitionRouter } from "./routes/competitionRoutes.js";
+
+export const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
 
-const port = 3000;
+app.use("/api/competitii", competitionRouter);
 
-app.listen(port, () => {
-  console.log("App running on port " + port);
-});
