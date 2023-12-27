@@ -16,7 +16,7 @@ export const getCompetition = catchAsync(async (req, res, next) => {
   const query = Competition.findById(id);
   const competition = await query;
   if (competition === null)
-    return next({ message: "Nu a fost gasita nicio competitie!", status: 404 });
+    return next({ message: "Nu a fost gasita aceasta competitie!", status: 404 });
   res.status(200).json({
     status: "success",
     data: competition,
