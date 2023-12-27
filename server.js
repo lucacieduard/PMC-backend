@@ -1,10 +1,13 @@
-import { app } from "./app.js";
 import dotenv from "dotenv";
-
-const port = 3000;
-
 dotenv.config({ path: "./.env" });
-// console.log(process.env.TEST);
+import { app } from "./app.js";
+import mongoose from "mongoose";
+
+mongoose.connect(process.env.DB_URL).then(() => {
+  console.log("Connected to DB!");
+});
+
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log("App running on port " + port);
