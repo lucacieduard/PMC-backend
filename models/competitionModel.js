@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import slugify from "slugify";
 
-const competitionSchema = mongoose.Schema({
+const competitionSchema = new mongoose.Schema({
   nume: {
     type: String,
     require: [true, "Competiția trebuie să aibă un nume!"],
@@ -88,6 +88,13 @@ competitionSchema.pre("save", function (next) {
   this.slug = slugify(this.nume, { lower: true });
   next();
 });
+
+
+
+
+
+
+
 
 const Competition = mongoose.model("Competition", competitionSchema);
 export default Competition;
