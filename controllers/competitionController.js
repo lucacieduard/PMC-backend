@@ -1,57 +1,41 @@
 import Competition from "../models/competitionModel.js";
+import catchAsync from "../utils/catchAsync.js";
 
-export const getAllCompetitions = async (req, res) => {
-  try {
-    const query = Competition.find();
-    const competitions = await query;
-    res.status(200).json({
-      status: "success",
-      length: competitions.length,
-      data: competitions,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
+export const getAllCompetitions = catchAsync(async (req, res) => {
+  const query = Competition.find();
+  const competitions = await query;
+  res.status(200).json({
+    status: "success",
+    length: competitions.length,
+    data: competitions,
+  });
+});
 
-export const getCompetition = async (req, res) => {
+export const getCompetition = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-  try {
-    const query = Competition.findById(id);
-    const competition = await query;
-    res.status(200).json({
-      status: "success",
-      data: competition,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-export const deleteCompetition = async (req, res) => {
-  const id = req.params.id;
-  try {
-    const query = Competition.findByIdAndDelete(id);
-    const competition = await query;
-    res.status(200).json({
-      status: "success",
-      data: null,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const query = Competition.findById(id);
+  const competition = await query;
+  if (competition === null)
+    return next({ message: "Nu a fost gasita nicio competitie!", status: 404 });
+  res.status(200).json({
+    status: "success",
+    data: competition,
+  });
+});
 
-export const addCompetition = async (req, res) => {
-  try {
-    const newCompetition = await Competition.create(req.body);
-    res.status(201).json({
-      status: "success",
-      data: newCompetition,
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "error",
-      message: error.message,
-    });
-  }
-};
+export const deleteCompetition = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  await Competition.findByIdAndDelete(id);
+  res.status(200).json({
+    status: "success",
+    data: null,
+  });
+});
+
+export const addCompetition = catchAsync(async (req, res, next) => {
+  const newCompetition = await Competition.create(req.body);
+  res.status(201).json({
+    status: "success",
+    data: newCompetition,
+  });
+});
