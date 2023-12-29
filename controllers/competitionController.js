@@ -1,6 +1,8 @@
+import slugify from "slugify";
 import Competition from "../models/competitionModel.js";
 import catchAsync from "../utils/catchAsync.js";
 
+// GET ALL COMPETITIONS
 export const getAllCompetitions = catchAsync(async (req, res) => {
   const query = Competition.find();
   const competitions = await query;
@@ -11,6 +13,7 @@ export const getAllCompetitions = catchAsync(async (req, res) => {
   });
 });
 
+// GET ONE COMPETITION
 export const getCompetition = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const query = Competition.findById(id);
@@ -26,6 +29,7 @@ export const getCompetition = catchAsync(async (req, res, next) => {
   });
 });
 
+// DELETE ONE COMPETITION
 export const deleteCompetition = catchAsync(async (req, res) => {
   const id = req.params.id;
   await Competition.findByIdAndDelete(id);
@@ -35,6 +39,7 @@ export const deleteCompetition = catchAsync(async (req, res) => {
   });
 });
 
+// ADD ONE COMPETITION
 export const addCompetition = catchAsync(async (req, res, next) => {
   const newCompetition = await Competition.create(req.body);
   res.status(201).json({
@@ -63,9 +68,32 @@ export const updateProba = catchAsync(async (req, res, next) => {
   console.log(proba.nume);
   // await competition.save();
 
-
   res.status(200).json({
     status: "success",
     data: { proba },
+  });
+});
+
+// UPDATE ONE COMPETITION
+export const updateCompetition = catchAsync(async (req, res, next) => {
+  console.log(req.body);
+  if(req.body.nume) {
+    const slug = slugify(req.body.nume, { lower: true });
+    req.body.slug = slug;
+  }
+
+  const newCompetition = await Competition.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      runValidators: true,
+      new: true,
+    }
+  );
+
+
+  res.status(200).json({
+    status: "success",
+    data: { newCompetition },
   });
 });
