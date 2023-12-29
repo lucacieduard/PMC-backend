@@ -4,6 +4,7 @@ import {
   getCompetition,
   addCompetition,
   deleteCompetition,
+  updateProba,
 } from "../controllers/competitionController.js";
 
 export const router = express.Router();
@@ -13,3 +14,4 @@ router.post("/", addCompetition);
 
 router.get("/:id", getCompetition);
 router.delete("/:id", deleteCompetition);
+router.patch("/:id/:categoryId/:probaId", updateProba);

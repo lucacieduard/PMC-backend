@@ -7,7 +7,7 @@ export const getAllCompetitions = catchAsync(async (req, res) => {
   res.status(200).json({
     status: "success",
     length: competitions.length,
-    data: competitions,
+    data: { competitions },
   });
 });
 
@@ -16,10 +16,13 @@ export const getCompetition = catchAsync(async (req, res, next) => {
   const query = Competition.findById(id);
   const competition = await query;
   if (competition === null)
-    return next({ message: "Nu a fost gasita aceasta competitie!", status: 404 });
+    return next({
+      message: "Nu a fost gasita aceasta competitie!",
+      status: 404,
+    });
   res.status(200).json({
     status: "success",
-    data: competition,
+    data: { competition },
   });
 });
 
@@ -36,6 +39,33 @@ export const addCompetition = catchAsync(async (req, res, next) => {
   const newCompetition = await Competition.create(req.body);
   res.status(201).json({
     status: "success",
-    data: newCompetition,
+    data: { newCompetition },
+  });
+});
+
+export const updateProba = catchAsync(async (req, res, next) => {
+  const { id, categoryId, probaId } = req.params;
+  const competition = await Competition.findById(id);
+  console.log(competition.nume);
+  if (competition === null)
+    return next({
+      message: "Nu a fost gasita aceasta competitie!",
+      status: 404,
+    });
+  const category = competition.categorii.id(categoryId);
+  console.log(category.nume);
+  if (category === null)
+    return next({
+      message: "Nu a fost gasita aceasta categorie!",
+      status: 404,
+    });
+  const proba = category.probe.id(probaId);
+  console.log(proba.nume);
+  // await competition.save();
+
+
+  res.status(200).json({
+    status: "success",
+    data: { proba },
   });
 });
