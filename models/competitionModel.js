@@ -31,61 +31,64 @@ const categorySchema = new mongoose.Schema({
   probe: [probaSchema],
 });
 
-const competitionSchema = new mongoose.Schema({
-  nume: {
-    type: String,
-    require: [true, "Competiția trebuie să aibă un nume!"],
-    minLength: 5,
-    unique: [true, "Competiția trebuie să aibă un nume unic!"],
-    trim: true,
-  },
-  banner: {
-    type: String,
-    default: null,
-  },
-  slug: String,
-  locatie: {
-    type: String,
-    require: [true, "Competiția trebuie să aibă o locație!"],
-  },
-  startCompetitie: {
-    type: Date,
-    require: true,
-  },
-  sfarsitCompetitie: {
-    type: Date,
-    require: true,
-    validate: {
-      validator: function (value) {
-        return value > this.startCompetitie;
+const competitionSchema = new mongoose.Schema(
+  {
+    nume: {
+      type: String,
+      require: [true, "Competiția trebuie să aibă un nume!"],
+      minLength: 5,
+      unique: [true, "Competiția trebuie să aibă un nume unic!"],
+      trim: true,
+    },
+    banner: {
+      type: String,
+      default: null,
+    },
+    slug: String,
+    locatie: {
+      type: {
+        nume: String,
+        lat: Number,
+        lng: Number,
+        _id: false,
       },
-      message:
-        "Data de final a competiției trebuie să fie după cea de începere!",
+      require: [
+        true,
+        "Competiția trebuie să aibă o locație cu nume si coordonate!",
+      ],
+    },
+    startCompetitie: {
+      type: Date,
+      require: true,
+    },
+    sfarsitCompetitie: {
+      type: Date,
+      require: true,
+    },
+    startInscrieri: {
+      type: Date,
+      require: true,
+    },
+    sfarsitInscrieri: {
+      type: Date,
+      require: true,
+    },
+    categorii: {
+      type: [categorySchema],
+      require: true,
     },
   },
-  startInscrieri: {
-    type: Date,
-    require: true,
-  },
-  sfarsitInscrieri: {
-    type: Date,
-    require: true,
-    validate: {
-      validator: function (value) {
-        return value > this.startInscrieri;
-      },
-      message:
-        "Data de final a competiției trebuie să fie după cea de începere!",
-    },
-  },
-  categorii: {
-    type: [categorySchema],
-    require: true,
-  },
-  competitieVizibila: {
-    type: Boolean,
-    require: true,
-  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+competitionSchema.virtual("inscrieriFlag").get(function () {
+  return this.sfarsitInscrieri > Date.now() && this.startInscrieri < Date.now();
+});
+competitionSchema.virtual("activaFlag").get(function () {
+  return this.sfarsitCompetitie > Date.now();
 });
 
 competitionSchema.pre("save", function (next) {
