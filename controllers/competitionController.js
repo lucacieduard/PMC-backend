@@ -53,7 +53,7 @@ export const getAllCompetitions = catchAsync(async (req, res) => {
 // GET ONE COMPETITION
 export const getCompetition = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-  const query = Competition.findById(id);
+  const query = Competition.findOne({ slug: id });
   const competition = await query;
   if (competition === null)
     return next({
@@ -79,9 +79,10 @@ export const deleteCompetition = catchAsync(async (req, res) => {
 // ADD ONE COMPETITION
 export const addCompetition = catchAsync(async (req, res, next) => {
   const newCompetition = await Competition.create(req.body);
+  console.log(req.body);
   res.status(201).json({
     status: "success",
-    data: { newCompetition },
+    data: { competition: newCompetition },
   });
 });
 

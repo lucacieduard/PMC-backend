@@ -42,20 +42,20 @@ const competitionSchema = new mongoose.Schema(
     },
     banner: {
       type: String,
-      default: null,
+      default: "default.jpg",
     },
     slug: String,
     locatie: {
-      type: {
-        nume: String,
-        lat: Number,
-        lng: Number,
-        _id: false,
-      },
-      require: [
-        true,
-        "Competiția trebuie să aibă o locație cu nume si coordonate!",
-      ],
+      type: String,
+      require: true,
+    },
+    lat: {
+      type: Number,
+      default: 40,
+    },
+    lng: {
+      type: Number,
+      default: 20,
     },
     startCompetitie: {
       type: Date,
