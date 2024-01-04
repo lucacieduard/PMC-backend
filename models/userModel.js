@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
   nume: {
@@ -30,10 +31,13 @@ const userSchema = new mongoose.Schema({
     required: [true, "Parola este obligatorie!"],
     minlength: [8, "Parola trebuie să fie de minim 8 caractere!"],
   },
-  parolaConfirm: {
-    type: String,
-    required: [true, "Confirmarea parolei este obligatorie!"],
-  },
 });
 
-export default User = mongoose.model("User", userSchema);
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("parola")) return next();
+  this.parola = await bcrypt.hash(this.parola, 12);
+  next();
+});
+
+const User = mongoose.model("User", userSchema);
+export default User;
