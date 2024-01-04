@@ -44,6 +44,10 @@ const competitionSchema = new mongoose.Schema(
       type: String,
       default: "default.jpg",
     },
+    program: {
+      type: String,
+      default: null,
+    },
     slug: String,
     locatie: {
       type: String,
@@ -51,11 +55,11 @@ const competitionSchema = new mongoose.Schema(
     },
     lat: {
       type: Number,
-      default: 40,
+      default: 47.18444,
     },
     lng: {
       type: Number,
-      default: 20,
+      default: 27.56111,
     },
     startCompetitie: {
       type: Date,
