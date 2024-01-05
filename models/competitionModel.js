@@ -88,16 +88,16 @@ const competitionSchema = new mongoose.Schema(
   }
 );
 
+competitionSchema.pre("save", function (next) {
+  this.slug = slugify(this.nume, { lower: true });
+  next();
+});
+
 competitionSchema.virtual("inscrieriFlag").get(function () {
   return this.sfarsitInscrieri > Date.now() && this.startInscrieri < Date.now();
 });
 competitionSchema.virtual("activaFlag").get(function () {
   return this.sfarsitCompetitie > Date.now();
-});
-
-competitionSchema.pre("save", function (next) {
-  this.slug = slugify(this.nume, { lower: true });
-  next();
 });
 
 const Competition = mongoose.model("Competition", competitionSchema);

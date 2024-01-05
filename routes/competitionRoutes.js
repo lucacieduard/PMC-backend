@@ -9,14 +9,15 @@ import {
   uploadBanner,
   resizeUserPhoto,
 } from "../controllers/competitionController.js";
+import { protect, restrictTo } from "../controllers/authController.js";
 
 export const router = express.Router();
 
 router.get("/", getAllCompetitions);
-router.post("/", addCompetition);
+router.post("/", protect, addCompetition);
 
 router.get("/:id", getCompetition);
 router
-  .delete("/:id", deleteCompetition)
+  .delete("/:id", protect, restrictTo("admin"), deleteCompetition)
   .patch("/:id", uploadBanner, resizeUserPhoto, updateCompetition);
 router.patch("/:id/:categoryId/:probaId", updateProba);

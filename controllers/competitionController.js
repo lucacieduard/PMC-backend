@@ -121,11 +121,9 @@ export const updateCompetition = catchAsync(async (req, res, next) => {
   if (req.file) req.body.banner = req.file.filename;
   const newCompetition = await Competition.findOneAndUpdate(
     { _id: req.params.id },
-
     req.body,
     {
       runValidators: true,
-
       new: true,
     }
   );
