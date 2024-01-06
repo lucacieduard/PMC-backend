@@ -124,9 +124,32 @@ export const restrictTo = (...roles) => {
 };
 
 export const persist = catchAsync(async (req, res, next) => {
+  let token;
+  if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+  if (!token) {
+    res.status(200).json({
+      status: "success",
+      user: null,
+    });
+  }
+
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  // 3) Verificăm dacă utilizatorul există
+  const user = await User.findById(decoded.id);
+  if (!user) return next(new AppError("Utilizatorul nu mai există!", 401));
+  if (user.parolaSchimbata(decoded.iat))
+    return next(
+      new AppError(
+        "Parola a fost schimbată recent! Te rugăm să te autentifici din nou!",
+        401
+      )
+    );
+
   res.status(200).json({
     status: "success",
-    user: req.user,
+    user: user,
   });
 });
 

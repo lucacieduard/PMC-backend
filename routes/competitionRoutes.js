@@ -14,7 +14,7 @@ import { protect, restrictTo } from "../controllers/authController.js";
 export const router = express.Router();
 
 router.get("/", getAllCompetitions);
-router.post("/", protect, addCompetition);
+router.post("/", protect, restrictTo("admin"), addCompetition);
 
 router.get("/:id", getCompetition);
 router
