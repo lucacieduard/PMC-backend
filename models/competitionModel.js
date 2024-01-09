@@ -81,6 +81,10 @@ const competitionSchema = new mongoose.Schema(
       type: [categorySchema],
       require: true,
     },
+    creatLa: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -94,10 +98,13 @@ competitionSchema.pre("save", function (next) {
 });
 
 competitionSchema.virtual("inscrieriFlag").get(function () {
-  return this.sfarsitInscrieri > Date.now() && this.startInscrieri < Date.now();
+  return (
+    this.sfarsitInscrieri > Date.now() + 1000 * 60 * 120 &&
+    this.startInscrieri < Date.now() + 1000 * 60 * 120
+  );
 });
 competitionSchema.virtual("activaFlag").get(function () {
-  return this.sfarsitCompetitie > Date.now();
+  return this.sfarsitCompetitie >= Date.now() + 1000 * 60 * 120;
 });
 
 const Competition = mongoose.model("Competition", competitionSchema);
