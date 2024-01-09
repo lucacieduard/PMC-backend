@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 const userSchema = new mongoose.Schema({
   nume: {
@@ -39,6 +40,9 @@ const userSchema = new mongoose.Schema({
     default: "user",
   },
   __v: { type: Number, select: false },
+  creatLa: { type: Date, default: Date.now },
+  tokenResetParola: String,
+  tokenResetParolaExpire: Date,
 });
 
 userSchema.pre("save", async function (next) {
@@ -46,6 +50,13 @@ userSchema.pre("save", async function (next) {
   this.parola = await bcrypt.hash(this.parola, 12);
   next();
 });
+
+userSchema.pre("save", function (next) {
+  if(!this.isModified("parola") || this.isNew) return next();
+
+  this.parolaSchimbataLa = Date.now() - 1000;
+  next()
+})
 
 userSchema.methods.correctPassword = async function (
   candidatePassword,
@@ -63,6 +74,17 @@ userSchema.methods.parolaSchimbata = function (JWTTimestamp) {
     return JWTTimestamp < changedTimestamp;
   }
   return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  this.tokenResetParola = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  console.log(resetToken, this.tokenResetParola);
+  this.tokenResetParolaExpire = Date.now() + 10 * 60 * 1000;
+  return resetToken;
 };
 
 const User = mongoose.model("User", userSchema);

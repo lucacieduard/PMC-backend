@@ -1,9 +1,11 @@
 import express from "express";
 import {
+  forgotPassword,
   login,
   logout,
   persist,
   protect,
+  resetPassword,
   restrictTo,
   signup,
 } from "../controllers/authController.js";
@@ -19,6 +21,8 @@ router.post("/creeaza-cont", signup);
 router.post("/autentificare", login);
 router.get("/persistLogin", persist);
 router.get("/deconectare", logout);
+router.post("/forgotPassword", forgotPassword);
+router.patch("/reseteazaParola/:token", resetPassword);
 
 router.get("/", protect, restrictTo("admin"), getAllUsers);
 router
