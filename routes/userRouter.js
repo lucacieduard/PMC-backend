@@ -8,6 +8,7 @@ import {
   resetPassword,
   restrictTo,
   signup,
+  updatePassword,
 } from "../controllers/authController.js";
 import {
   deleteUser,
@@ -22,6 +23,7 @@ router.post("/autentificare", login);
 router.get("/persistLogin", persist);
 router.get("/deconectare", logout);
 router.post("/forgotPassword", forgotPassword);
+router.post("/actualizeaza-parola", protect, updatePassword);
 router.patch("/reseteazaParola/:token", resetPassword);
 
 router.get("/", protect, restrictTo("admin"), getAllUsers);

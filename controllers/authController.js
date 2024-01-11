@@ -131,12 +131,11 @@ export const persist = catchAsync(async (req, res, next) => {
     token = req.cookies.jwt;
   }
   if (!token) {
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       user: null,
     });
   }
-
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   // 3) Verificăm dacă utilizatorul există
   const user = await User.findById(decoded.id);
@@ -203,7 +202,7 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    message: "Token-ul a fost trimis pe email!",
+    message: "Link-ul pentru resetarea parolei a fost trimis pe email!",
   });
 });
 
@@ -230,8 +229,23 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   //3 Update changedPasswordAt property for the user
-  //4 Log the user in, send JWT
 
+  res.status(200).json({
+    status: "success",
+  });
+});
+
+export const updatePassword = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user._id).select("+parola");
+  //2 Check if POSTed current password is correct
+  const result = await user.correctPassword(req.body.parolaVeche, user.parola);
+  if (!result) {
+    return next(new AppError("Parola actuala este incorecta!", 401));
+  }
+  //3 If so, update password
+  user.parola = req.body.parolaNoua;
+  await user.save();
+  //4 Log user in, send JWT
   const token = signToken(user._id);
   res
     .cookie("jwt", token, {
@@ -243,16 +257,6 @@ export const resetPassword = catchAsync(async (req, res, next) => {
     .status(200)
     .json({
       status: "success",
-      data: {
-        user:{
-          _id: user._id,
-          nume: user.nume,
-          prenume: user.prenume,
-          email: user.email,
-          telefon: user.telefon,
-          clubSportiv: user.clubSportiv,
-          role: user.role,
-        }
-      },
+      message: "Parola a fost actualizata cu succes!",
     });
 });
