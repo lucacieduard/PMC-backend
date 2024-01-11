@@ -23,7 +23,7 @@ router.post("/autentificare", login);
 router.get("/persistLogin", persist);
 router.get("/deconectare", logout);
 router.post("/forgotPassword", forgotPassword);
-router.post("/actualizeaza-parola", protect, updatePassword);
+router.patch("/actualizeaza-parola", protect, updatePassword);
 router.patch("/reseteazaParola/:token", resetPassword);
 
 router.get("/", protect, restrictTo("admin"), getAllUsers);
