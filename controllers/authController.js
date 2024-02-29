@@ -159,7 +159,7 @@ export const persist = catchAsync(async (req, res, next) => {
 });
 
 export const logout = (req, res) => {
-  res.clearCookie("jwt");
+  res.clearCookie("jwt", { path: "/" });
   res.status(200).json({
     status: "success",
   });
