@@ -29,7 +29,7 @@ export const signup = catchAsync(async (req, res) => {
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production" ? true : false,
-    sameSite: "none",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   });
   res.status(200).json({
     status: "success",
@@ -65,7 +65,7 @@ export const login = catchAsync(async (req, res, next) => {
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production" ? true : false,
-    sameSite: "none",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   });
 
   res.status(200).json({
@@ -159,7 +159,13 @@ export const persist = catchAsync(async (req, res, next) => {
 });
 
 export const logout = (req, res) => {
-  res.clearCookie("jwt", { path: "/" });
+  res.clearCookie("jwt", {
+    path: "/",
+    domain:
+      process.env.NODE_ENV === "production"
+        ? "pmc-backend-v8pz.onrender.com"
+        : "localhost",
+  });
   res.status(200).json({
     status: "success",
   });
@@ -258,7 +264,7 @@ export const updatePassword = catchAsync(async (req, res, next) => {
       ),
       httpOnly: true,
       secure: process.env.NODE_ENV === "production" ? true : false,
-      sameSite: "none",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     })
     .status(200)
     .json({
