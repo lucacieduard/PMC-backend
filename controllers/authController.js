@@ -162,7 +162,7 @@ export const logout = (req, res) => {
   res.clearCookie("jwt", {
     domain:
       process.env.NODE_ENV === "production"
-        ? "pmc-backend-v8pz.onrender.com"
+        ? ".pmc-backend-v8pz.onrender.com"
         : "localhost",
     path: "/",
   });
