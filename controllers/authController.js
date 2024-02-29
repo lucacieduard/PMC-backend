@@ -28,6 +28,7 @@ export const signup = catchAsync(async (req, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 60 * 60 * 1000 * 24
     ),
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production" ? true : false,
   });
   res.status(200).json({
     status: "success",
@@ -62,6 +63,7 @@ export const login = catchAsync(async (req, res, next) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 60 * 60 * 1000 * 24
     ),
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production" ? true : false,
   });
 
   res.status(200).json({
@@ -253,6 +255,7 @@ export const updatePassword = catchAsync(async (req, res, next) => {
         Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 60 * 60 * 1000 * 24
       ),
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production" ? true : false,
     })
     .status(200)
     .json({
