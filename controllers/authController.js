@@ -159,13 +159,14 @@ export const persist = catchAsync(async (req, res, next) => {
 });
 
 export const logout = (req, res) => {
-  res.clearCookie("jwt", {
-    domain:
-      process.env.NODE_ENV === "production"
-        ? ".pmc-backend-v8pz.onrender.com"
-        : "localhost",
-    path: "/",
-  });
+  // res.clearCookie("jwt", {
+  //   domain:
+  //     process.env.NODE_ENV === "production"
+  //       ? ".pmc-backend-v8pz.onrender.com"
+  //       : "localhost",
+  //   path: "/",
+  // });
+  res.cookie("jwt", "", { expires: new Date(1), path: "/" });
   res.status(200).json({
     status: "success",
   });
