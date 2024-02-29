@@ -12,7 +12,10 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin: `https://management-competitie.netlify.app`,
+    origin: [
+      "http://localhost:5173",
+      `https://management-competitie.eduardlucaci.ro`,
+    ],
   })
 );
 
