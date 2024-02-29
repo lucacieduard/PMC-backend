@@ -29,6 +29,7 @@ export const signup = catchAsync(async (req, res) => {
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production" ? true : false,
+    sameSite: "none",
   });
   res.status(200).json({
     status: "success",
@@ -64,6 +65,7 @@ export const login = catchAsync(async (req, res, next) => {
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production" ? true : false,
+    sameSite: "none",
   });
 
   res.status(200).json({
@@ -256,6 +258,7 @@ export const updatePassword = catchAsync(async (req, res, next) => {
       ),
       httpOnly: true,
       secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: "none",
     })
     .status(200)
     .json({
