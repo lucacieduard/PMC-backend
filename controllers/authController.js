@@ -160,7 +160,7 @@ export const persist = catchAsync(async (req, res, next) => {
 
 export const logout = (req, res) => {
   res.clearCookie("jwt", {
-    path: "/",
+    
     domain:
       process.env.NODE_ENV === "production"
         ? "pmc-backend-v8pz.onrender.com"
